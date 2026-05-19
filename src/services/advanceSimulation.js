@@ -54,21 +54,41 @@ function generateDayEvents() {
 }
 
 export function advanceSimulation() {
-  const { phase, currentDay } = useSimulation();
+  const { screen, currentDay } = useSimulation();
 
-  // Leaving intro phase
+  // ========================
+  // INTRO -> DAY
+  // ========================
 
-  if (phase.value === "intro") {
-    phase.value = "day";
+  if (screen.value === "intro") {
+    screen.value = "day";
 
     generateDayEvents();
 
     return;
   }
 
-  // Normal day progression
+  // ========================
+  // DAY -> GRAVEYARD
+  // ========================
 
-  generateDayEvents();
+  if (screen.value === "day") {
+    screen.value = "graveyard";
 
-  currentDay.value++;
+    return;
+  }
+
+  // ========================
+  // GRAVEYARD -> NEXT DAY
+  // ========================
+
+  if (screen.value === "graveyard") {
+    currentDay.value++;
+
+    generateDayEvents();
+
+    screen.value = "day";
+
+    return;
+  }
 }

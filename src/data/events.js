@@ -137,7 +137,7 @@ const events = [
 
     text: "{master} succumbs to the poison and dies.",
 
-    days: [1, 2, 3, 4, 5, 6, 7],
+    days: [2, 3, 4, 5, 6, 7],
 
     weight: 2,
 
@@ -169,7 +169,7 @@ const events = [
 
     text: "{master} miraculously recovers from the poison!",
 
-    days: [1, 2, 3, 4, 5, 6, 7],
+    days: [2, 3, 4, 5, 6, 7],
 
     weight: 2,
 
