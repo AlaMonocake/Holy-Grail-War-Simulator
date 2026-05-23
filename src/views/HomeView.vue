@@ -51,11 +51,11 @@ img {
   max-height: 200px;
 }
 .master-list {
-  display: flex; /* Enables flexbox layout */
-  flex-wrap: wrap; /* Allows items to wrap to the next row */
-  justify-content: flex-start; /* Aligns items to the left */
-  align-items: flex-start; /* Aligns items to the top */
-  gap: 20px; /* Adds space between containers */
+  display: flex;
+  flex-wrap: wrap; /*items to wrap to the next row*/
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px; /*space between containers*/
   margin: 0;
   padding: 0;
 }

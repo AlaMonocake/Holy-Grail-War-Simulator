@@ -1,10 +1,10 @@
-import { ref } from "vue";
+import { ref, shallowRef } from "vue";
 
 const teams = ref([]);
 
 const participants = ref([]);
 
-const currentEvents = ref([]);
+const currentEvents = shallowRef([]);
 
 const pastEvents = ref([]);
 

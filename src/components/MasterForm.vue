@@ -51,13 +51,13 @@ function randomizeServant() {
 <style scoped>
 .master-form {
   width: 13%; /* Fixed width for each container, at 13% all masters show on one row rn */
-  display: flex; /* Flexbox for Master and Servant sections */
-  flex-direction: column; /* Ensures Master and Servant stack vertically */
-  background-color: rgb(51, 27, 27); /* Background color */
+  display: flex;
+  flex-direction: column; /*Master and Servant stack vertically */
+  background-color: rgb(51, 27, 27);
   padding: 5px 10px 5px 10px;
-  border: 1px solid #ff4444; /* Border around each container */
+  border: 1px solid #ff4444;
   border-radius: 10px;
-  box-sizing: border-box; /* Ensures padding is included in width */
+  box-sizing: border-box;
 }
 
 input,

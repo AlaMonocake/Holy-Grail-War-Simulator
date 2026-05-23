@@ -11,8 +11,6 @@ export function pickEvent(participants, currentDay, master = null) {
       return false;
     }
 
-    // Valid participants
-
     const validTargets = event.valid(participants, pastEvents.value);
 
     return validTargets.length > 0;

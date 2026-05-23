@@ -2,9 +2,7 @@ export function buildParticipants(teams) {
   const participants = [];
 
   teams.forEach((team) => {
-    // =========================
     // MASTER
-    // =========================
 
     participants.push({
       id: team.id,
@@ -17,10 +15,7 @@ export function buildParticipants(teams) {
 
       status: "alive",
     });
-
-    // =========================
     // SERVANT
-    // =========================
 
     if (team.servant) {
       participants.push({
@@ -28,7 +23,6 @@ export function buildParticipants(teams) {
 
         name: team.servant.name,
 
-        // Handles BOTH possible schemas
         picture: team.servant.picture || team.servant.image,
 
         type: "servant",

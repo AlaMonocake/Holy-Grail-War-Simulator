@@ -10,7 +10,10 @@ defineProps({
   <div class="event">
     <div class="participants">
       <div v-for="key in event.actors" :key="key">
-        <img :src="event.participants[key]?.picture" class="portrait" />
+        <img
+          v-if="event.participants[key]"
+          :src="event.participants[key].picture"
+          class="portrait" />
       </div>
     </div>
 

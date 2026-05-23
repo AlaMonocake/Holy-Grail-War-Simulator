@@ -1,6 +1,12 @@
-import { masterWithServant } from "../services/eventTemplates";
+import {
+  aliveMasters,
+  masterPairs,
+  masterWithServant,
+  servantPairs,
+} from "../services/eventHelpers";
 
-// Contains all event definitions for the simulation
+// Contains all event definitions
+// for the simulation
 
 const events = [
   // =========================================
@@ -47,24 +53,7 @@ const events = [
     requires: [],
 
     valid(participants) {
-      const aliveServants = participants.filter(
-        (p) => p.type === "servant" && p.status === "alive",
-      );
-
-      if (aliveServants.length < 2) return [];
-
-      const pairs = [];
-
-      for (let i = 0; i < aliveServants.length; i++) {
-        for (let j = i + 1; j < aliveServants.length; j++) {
-          pairs.push({
-            servant1: aliveServants[i],
-            servant2: aliveServants[j],
-          });
-        }
-      }
-
-      return pairs;
+      return servantPairs(participants);
     },
 
     effects(servant1, servant2) {
@@ -91,11 +80,7 @@ const events = [
 
     valid(participants) {
       return masterWithServant(participants).filter(
-        ({ master, servant }) =>
-          master &&
-          servant &&
-          master.status === "alive" &&
-          servant.status === "alive",
+        ({ master, servant }) => master && servant,
       );
     },
 
@@ -184,7 +169,120 @@ const events = [
     },
 
     effects(master, servant) {
-      // healed, no effect
+      // healed
+    },
+  },
+
+  // =========================================
+  // LAYLINE DISPUTE
+  // =========================================
+
+  {
+    id: "event_layline_dispute",
+
+    text: "{master1} and {master2} fight over ownership of a layline. {master2} has the disadvantage and retreats.",
+
+    days: [2, 3, 4, 5, 6, 7],
+
+    weight: 5,
+
+    requires: [],
+
+    valid(participants) {
+      return masterPairs(participants);
+    },
+
+    effects(master1, master2) {
+      // retreat only
+    },
+  },
+
+  // =========================================
+  // PROJECTION
+  // =========================================
+
+  {
+    id: "event_projection",
+
+    text: "{master} projects some weapons.",
+
+    days: [1, 2, 3, 4, 5, 6, 7],
+
+    weight: 4,
+
+    requires: [],
+
+    valid(participants) {
+      return aliveMasters(participants).map((master) => ({
+        master,
+      }));
+    },
+
+    effects(master) {
+      // flavor only
+    },
+  },
+
+  // =========================================
+  // CHURCH AMBUSH
+  // =========================================
+
+  {
+    id: "event_church_ambush",
+
+    text: "{master1} runs for the church, but {master2} and {servant} ambush and kill them.",
+
+    days: [3, 4, 5, 6, 7],
+
+    weight: 3,
+
+    requires: [],
+
+    valid(participants) {
+      const eventSets = [];
+
+      const teams = masterWithServant(participants);
+
+      teams.forEach(({ master: master1 }) => {
+        teams.forEach(({ master: master2, servant }) => {
+          if (master1.id === master2.id) return;
+          if (!servant) return;
+
+          eventSets.push({ master1, master2, servant });
+        });
+      });
+
+      return eventSets;
+    },
+
+    effects(master1) {
+      master1.status = "dead";
+    },
+  },
+
+  // =========================================
+  // SANITY
+  // =========================================
+
+  {
+    id: "event_sanity",
+
+    text: "{master} questions their sanity.",
+
+    days: [2, 3, 4, 5, 6, 7],
+
+    weight: 2,
+
+    requires: [],
+
+    valid(participants) {
+      return aliveMasters(participants).map((master) => ({
+        master,
+      }));
+    },
+
+    effects(master) {
+      // flavor only
     },
   },
 ];
