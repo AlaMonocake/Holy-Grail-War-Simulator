@@ -13,6 +13,7 @@ const phase = ref("intro");
 const currentDay = ref(1);
 
 const screen = ref("intro");
+const winner = ref(null);
 
 function setTeams(newTeams) {
   teams.value = newTeams;
@@ -38,5 +39,6 @@ export function useSimulation() {
     setTeams,
     setParticipants,
     setEvents,
+    winner,
   };
 }

@@ -10,6 +10,7 @@ import IntroScreen from "../components/simulation/IntroScreen.vue";
 import DayScreen from "../components/simulation/DayScreen.vue";
 
 import GraveyardScreen from "../components/simulation/GraveyardScreen.vue";
+import VictoryScreen from "../components/simulation/VictoryScreen.vue";
 
 const { teams, currentEvents, screen, currentDay, participants } =
   useSimulation();
@@ -40,7 +41,9 @@ const deadParticipants = computed(() =>
     v-else-if="screen === 'graveyard'"
     :deadParticipants="deadParticipants" />
 
-  <button class="button" id="next-day" @click="advanceSimulation">
+  <VictoryScreen v-else-if="screen === 'victory'" :winner="winner" />
+
+  <button v-if="screen !== 'victory'" @click="advanceSimulation">
     Proceed
   </button>
 </template>

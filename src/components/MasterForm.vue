@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { fetchServantData } from "../services/servantService";
+import { loadServants, getRandomServant } from "../services/servantService";
 
 const props = defineProps({
   master: Object,
@@ -9,15 +9,30 @@ const props = defineProps({
 const servants = ref([]);
 
 onMounted(async () => {
-  servants.value = await fetchServantData();
+  servants.value = await loadServants();
 });
 
 function randomizeServant() {
   if (!servants.value.length) return;
 
-  const randomIndex = Math.floor(Math.random() * servants.value.length);
+  props.master.servant = getRandomServant();
+}
+const imageUrl = ref("");
 
-  props.master.servant = servants.value[randomIndex];
+function updatePicture() {
+  if (imageUrl.value.trim()) {
+    props.master.picture = imageUrl.value;
+  }
+}
+
+function uploadImage(event) {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  props.master.picture = URL.createObjectURL(file);
+
+  imageUrl.value = "";
 }
 </script>
 
@@ -34,8 +49,16 @@ function randomizeServant() {
         <option value="male">Male</option>
         <option value="female">Female</option>
       </select>
-      <p>Picture link:</p>
-      <input v-model="master.picture" class="input" />
+      <p>Replace picture:</p>
+      <input
+        v-model="imageUrl"
+        class="input"
+        placeholder="Paste your image link here"
+        @input="updatePicture" />
+
+      <p>Or upload an image:</p>
+
+      <input type="file" accept="image/*" @change="uploadImage" />
       <h3>The Servant:</h3>
       <button class="button" @click="randomizeServant">Randomize</button>
       <select v-model="master.servant" class="input">

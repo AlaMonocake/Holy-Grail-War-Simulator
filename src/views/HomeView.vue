@@ -4,7 +4,7 @@ import MasterForm from "../components/MasterForm.vue";
 import { masters as defaultMasters } from "../data/masters.js";
 import { useRouter } from "vue-router";
 import { useSimulation, setParticipants } from "../services/useSimulation";
-import { buildParticipants } from "@/services/buildParticipants";
+import { buildParticipants } from "../services/buildParticipants";
 
 const masters = ref([...defaultMasters]);
 const router = useRouter();
