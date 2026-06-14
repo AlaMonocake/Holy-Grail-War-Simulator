@@ -53,12 +53,16 @@ function uploadImage(event) {
       <input
         v-model="imageUrl"
         class="input"
-        placeholder="Paste your image link here"
+        placeholder="Paste image link here"
         @input="updatePicture" />
 
       <p>Or upload an image:</p>
 
-      <input type="file" accept="image/*" @change="uploadImage" />
+      <label class="upload-button">
+        Upload Image
+
+        <input type="file" accept="image/*" @change="uploadImage" hidden />
+      </label>
       <h3>The Servant:</h3>
       <button class="button" @click="randomizeServant">Randomize</button>
       <select v-model="master.servant" class="input">
@@ -87,5 +91,30 @@ input,
 select,
 button {
   padding: 0.5rem;
+}
+.upload-button {
+  display: inline-block;
+
+  padding: 0.5rem 1rem;
+
+  background-color: rgb(51, 27, 27);
+
+  border: 1px solid #ff4444;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  text-align: center;
+
+  transition: 0.2s;
+}
+
+.upload-button:hover {
+  background-color: rgb(70, 35, 35);
+}
+
+.upload-button:active {
+  transform: scale(0.98);
 }
 </style>
