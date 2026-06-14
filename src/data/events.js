@@ -230,7 +230,7 @@ const events = [
   {
     id: "event_church_ambush",
 
-    text: "{master1} runs for the church, but {master2} and {servant} ambush and kill them.",
+    text: "{master1} runs for the church, but {master2} and {servant} ambush and kill {himHer}.",
 
     days: [3, 4, 5, 6, 7],
 
@@ -267,7 +267,7 @@ const events = [
   {
     id: "event_sanity",
 
-    text: "{master} questions their sanity.",
+    text: "{master} questions {hisHer} sanity.",
 
     days: [2, 3, 4, 5, 6, 7],
 

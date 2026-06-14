@@ -43,7 +43,11 @@ const deadParticipants = computed(() =>
 
   <VictoryScreen v-else-if="screen === 'victory'" :winner="winner" />
 
-  <button v-if="screen !== 'victory'" @click="advanceSimulation">
+  <button
+    class="button"
+    id="next-day"
+    v-if="screen !== 'victory'"
+    @click="advanceSimulation">
     Proceed
   </button>
 </template>
