@@ -1,9 +1,12 @@
 <script setup>
 import { formatEvent } from "../../services/formatEvent";
 
-defineProps({
+const props = defineProps({
   event: Object,
 });
+
+console.log("EVENT CARD RECEIVED:", props.event);
+console.log("FORMATTED TEXT:", formatEvent(props.event));
 </script>
 
 <template>

@@ -27,6 +27,20 @@ function setEvents(events) {
   currentEvents.value = events;
 }
 
+export function restartSimulation() {
+  participants.value = participants.value.map((participant) => ({
+    ...participant,
+    status: "alive",
+  }));
+
+  currentEvents.value = [];
+  pastEvents.value = [];
+  currentDay.value = 1;
+  phase.value = "intro";
+  screen.value = "intro";
+  winner.value = null;
+}
+
 export function useSimulation() {
   return {
     teams,
@@ -40,5 +54,6 @@ export function useSimulation() {
     setParticipants,
     setEvents,
     winner,
+    restartSimulation,
   };
 }

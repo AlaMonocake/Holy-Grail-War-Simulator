@@ -30,7 +30,13 @@ function uploadImage(event) {
 
   if (!file) return;
 
-  props.master.picture = URL.createObjectURL(file);
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    props.master.picture = reader.result;
+  };
+
+  reader.readAsDataURL(file);
 
   imageUrl.value = "";
 }

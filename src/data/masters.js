@@ -39,7 +39,7 @@ export const masters = [
   {
     name: "Kirei",
     gender: "male",
-    picture: "https://cdn.myanimelist.net/images/characters/6/282306.jpg",
+    picture: "https://cdn.myanimelist.net/images/characters/3/258487.jpg",
     servant: null,
     id: 6,
   },

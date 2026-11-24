@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from "vue";
 
-import { useSimulation } from "../services/useSimulation";
+import { useSimulation, restartSimulation } from "../services/useSimulation";
 
 import { advanceSimulation } from "../services/advanceSimulation";
 
@@ -11,8 +11,9 @@ import DayScreen from "../components/simulation/DayScreen.vue";
 
 import GraveyardScreen from "../components/simulation/GraveyardScreen.vue";
 import VictoryScreen from "../components/simulation/VictoryScreen.vue";
+import DrawScreen from "@/components/simulation/DrawScreen.vue";
 
-const { teams, currentEvents, screen, currentDay, participants } =
+const { teams, currentEvents, screen, currentDay, participants, winner } =
   useSimulation();
 
 const deadParticipants = computed(() =>
@@ -43,6 +44,15 @@ const deadParticipants = computed(() =>
 
   <VictoryScreen v-else-if="screen === 'victory'" :winner="winner" />
 
+  <DrawScreen v-else-if="screen === 'draw'" />
+
+  <button
+    v-if="screen === 'victory' || screen === 'draw'"
+    class="button"
+    @click="restartSimulation">
+    Restart the Grail War
+  </button>
+
   <button
     class="button"
     id="next-day"
@@ -62,5 +72,12 @@ img {
   padding-bottom: 5px;
   margin: 5px 0 0 0;
   text-align: center;
+}
+.participants {
+  display: flex;
+
+  gap: 0.5rem;
+
+  align-items: center;
 }
 </style>

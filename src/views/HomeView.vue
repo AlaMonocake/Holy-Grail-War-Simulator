@@ -20,6 +20,67 @@ function startSimulation() {
   setParticipants(builtParticipants);
   router.push("/simulation");
 }
+const savedLineups = ref([
+  { name: "", masters: null },
+  { name: "", masters: null },
+  { name: "", masters: null },
+]);
+
+// Load previously saved slots.
+const storedLineups = localStorage.getItem("savedLineups");
+
+if (storedLineups) {
+  const parsed = JSON.parse(storedLineups);
+
+  savedLineups.value = parsed.map((slot, index) => {
+    // Convert lineups saved using our previous format.
+    if (Array.isArray(slot)) {
+      return {
+        name: `Lineup ${index + 1}`,
+        masters: slot,
+      };
+    }
+
+    return slot || { name: "", masters: null };
+  });
+} else {
+  // Migrate the old single saved lineup into Slot 1.
+  const oldLineup = localStorage.getItem("savedLineup");
+
+  if (oldLineup) {
+    savedLineups.value[0] = {
+      name: "My first lineup",
+      masters: JSON.parse(oldLineup),
+    };
+  }
+}
+
+// Save changes to slot names.
+function saveLineupNames() {
+  localStorage.setItem("savedLineups", JSON.stringify(savedLineups.value));
+}
+
+function saveLineup(index) {
+  savedLineups.value[index].masters = JSON.parse(JSON.stringify(masters.value));
+
+  if (!savedLineups.value[index].name.trim()) {
+    savedLineups.value[index].name = `Lineup ${index + 1}`;
+  }
+
+  saveLineupNames();
+
+  alert(`Lineup "${savedLineups.value[index].name}" saved!`);
+}
+
+function loadLineup(index) {
+  const lineup = savedLineups.value[index];
+
+  if (!lineup.masters) return;
+
+  masters.value = JSON.parse(JSON.stringify(lineup.masters));
+
+  alert(`Lineup "${lineup.name}" loaded!`);
+}
 </script>
 
 <template>
@@ -36,6 +97,36 @@ function startSimulation() {
   <button id="simulation" class="button" @click="startSimulation">
     Start Simulation
   </button>
+
+  <div class="saved-lineups">
+    <h2>Saved Lineups</h2>
+
+    <div
+      v-for="(lineup, index) in savedLineups"
+      :key="index"
+      class="lineup-slot">
+      <h3>Slot {{ index + 1 }}</h3>
+
+      <input
+        v-model="lineup.name"
+        class="input"
+        placeholder="Name this lineup"
+        @change="saveLineupNames" />
+
+      <p>
+        {{ lineup.masters ? "Lineup saved!" : "Empty slot" }}
+      </p>
+
+      <button class="button" @click="saveLineup(index)">Save</button>
+
+      <button
+        class="button"
+        @click="loadLineup(index)"
+        :disabled="!lineup.masters">
+        Load
+      </button>
+    </div>
+  </div>
 </template>
 
 <style>
