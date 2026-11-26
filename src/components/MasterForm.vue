@@ -50,11 +50,6 @@ function uploadImage(event) {
       <img :src="master.picture" />
       <p>Name:</p>
       <input v-model="master.name" class="input" />
-      <p>Choose a gender:</p>
-      <select v-model="master.gender">
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-      </select>
       <p>Replace picture:</p>
       <input
         v-model="imageUrl"

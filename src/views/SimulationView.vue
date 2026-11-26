@@ -12,9 +12,18 @@ import DayScreen from "../components/simulation/DayScreen.vue";
 import GraveyardScreen from "../components/simulation/GraveyardScreen.vue";
 import VictoryScreen from "../components/simulation/VictoryScreen.vue";
 import DrawScreen from "@/components/simulation/DrawScreen.vue";
+import NightScreen from "../components/simulation/NightScreen.vue";
 
-const { teams, currentEvents, screen, currentDay, participants, winner } =
-  useSimulation();
+const {
+  teams,
+  currentEvents,
+  screen,
+  currentDay,
+  participants,
+  winner,
+  goBack,
+  history,
+} = useSimulation();
 
 const deadParticipants = computed(() =>
   participants.value.filter((p) => p.status === "dead"),
@@ -25,7 +34,9 @@ const deadParticipants = computed(() =>
   <header>
     <h1 class="title header">HOLY GRAIL WAR SIMULATOR</h1>
 
-    <h2 class="header" id="day-counter">Day {{ currentDay }}</h2>
+    <h2 class="header" id="day-counter">
+      {{ screen === "night" ? "Night" : "Day" }} {{ currentDay }}
+    </h2>
   </header>
 
   <!-- INTRO -->
@@ -35,6 +46,9 @@ const deadParticipants = computed(() =>
   <!-- DAY -->
 
   <DayScreen v-else-if="screen === 'day'" :events="currentEvents" />
+
+  <!-- NIGHT -->
+  <NightScreen v-else-if="screen === 'night'" :events="currentEvents" />
 
   <!-- GRAVEYARD -->
 
@@ -46,6 +60,10 @@ const deadParticipants = computed(() =>
 
   <DrawScreen v-else-if="screen === 'draw'" />
 
+  <button class="button" v-if="history.length > 0" @click="goBack">
+    Previous
+  </button>
+
   <button
     v-if="screen === 'victory' || screen === 'draw'"
     class="button"
@@ -56,7 +74,7 @@ const deadParticipants = computed(() =>
   <button
     class="button"
     id="next-day"
-    v-if="screen !== 'victory'"
+    v-if="screen !== 'victory' && screen !== 'draw'"
     @click="advanceSimulation">
     Proceed
   </button>

@@ -2,26 +2,23 @@ import { pickEvent } from "./pickEvent";
 import { useSimulation } from "../services/useSimulation";
 import { executeEvent } from "./executeEvent";
 
-function generateDayEvents() {
+function generateEvents(time) {
   const { participants, setEvents, currentDay, pastEvents } = useSimulation();
 
   const simulationParticipants = participants.value;
 
-  // Everyone alive at the beginning of the day.
-  const dailyParticipants = simulationParticipants.filter(
+  const phaseParticipants = simulationParticipants.filter(
     (p) => p.status === "alive",
   );
 
-  const dayEvents = [];
+  const phaseEvents = [];
   const participantsWhoActed = new Set();
 
-  for (const participant of dailyParticipants) {
-    // Someone else may already have included them in an event.
+  for (const participant of phaseParticipants) {
     if (participantsWhoActed.has(participant.id)) {
       continue;
     }
 
-    // They may have died during an earlier event.
     if (participant.status !== "alive") {
       continue;
     }
@@ -31,6 +28,7 @@ function generateDayEvents() {
       currentDay.value,
       pastEvents.value,
       participant.id,
+      time,
     );
 
     if (selectedEvent) {
@@ -38,7 +36,7 @@ function generateDayEvents() {
 
       const selected = validSets[Math.floor(Math.random() * validSets.length)];
 
-      // Everyone involved counts as having appeared.
+      // everyone involved counts as having appeared
       Object.values(selected).forEach((p) => {
         if (p) participantsWhoActed.add(p.id);
       });
@@ -47,26 +45,28 @@ function generateDayEvents() {
 
       runtimeEvent.applyEffects();
 
-      // Save the event regardless of how many Masters remain.
       pastEvents.value.push(runtimeEvent);
-      dayEvents.push(runtimeEvent);
+      phaseEvents.push(runtimeEvent);
 
-      // Check how many Masters are still alive.
+      // stop generating events if the war has ended
       const remainingMasters = simulationParticipants.filter(
         (p) => p.type === "master" && p.status === "alive",
       );
 
-      // Stop generating events if the war has ended.
       if (remainingMasters.length <= 1) {
         break;
       }
     } else {
-      // Fallback activity for participants without a valid event.
+      // fallback activity for participants without a valid event
       const fallbackDefinition = {
         text:
-          participant.type === "master"
-            ? "{master} spends the day preparing for the next battle."
-            : "{servant} spends the day gathering info around the city.",
+          time === "day"
+            ? participant.type === "master"
+              ? "{master} spends the day preparing for the next battle."
+              : "{servant} spends the day gathering information around the city."
+            : participant.type === "master"
+              ? "{master} spends the night resting."
+              : "{servant} spends the night keeping watch.",
       };
 
       const fallbackParticipants = {
@@ -81,41 +81,34 @@ function generateDayEvents() {
       participantsWhoActed.add(participant.id);
 
       pastEvents.value.push(runtimeEvent);
-      dayEvents.push(runtimeEvent);
+      phaseEvents.push(runtimeEvent);
     }
   }
-  console.log("DAY:", currentDay.value);
-  console.log("PARTICIPANTS:", dailyParticipants);
-  console.log("GENERATED EVENTS:", dayEvents);
-  console.log("EVENT COUNT:", dayEvents.length);
-  setEvents(dayEvents);
+
+  console.log(`${time.toUpperCase()}:`, currentDay.value);
+  console.log("GENERATED EVENTS:", phaseEvents);
+
+  setEvents(phaseEvents);
 }
 
 export function advanceSimulation() {
-  const { screen, currentDay, participants, winner } = useSimulation();
-  // INTRO -> DAY 1
-  if (screen.value === "intro") {
-    screen.value = "day";
-    generateDayEvents();
+  const {
+    screen,
+    currentDay,
+    participants,
+    winner,
+    saveHistory,
+    future,
+    goForward,
+  } = useSimulation();
+
+  // Replay an already-generated screen if one exists.
+  if (future.value.length > 0) {
+    goForward();
     return;
   }
 
-  // DAY -> GRAVEYARD
-  if (screen.value === "day") {
-    screen.value = "graveyard";
-    return;
-  }
-
-  // GRAVEYARD -> NEXT DAY (or END)
-  if (screen.value === "graveyard") {
-    if (checkVictory()) return;
-
-    currentDay.value++;
-    generateDayEvents();
-
-    screen.value = "day";
-    return;
-  }
+  saveHistory();
 
   function checkVictory() {
     const aliveMasters = participants.value.filter(
@@ -137,30 +130,33 @@ export function advanceSimulation() {
     return false;
   }
 
-  // INTRO -> DAY 1
+  // INTRO -> DAY
   if (screen.value === "intro") {
     screen.value = "day";
-    generateDayEvents();
-    checkVictory();
+    generateEvents("day");
     return;
   }
 
-  // DAY -> GRAVEYARD
+  // DAY -> NIGHT
   if (screen.value === "day") {
+    screen.value = "night";
+    generateEvents("night");
+    return;
+  }
+
+  // NIGHT -> GRAVEYARD
+  if (screen.value === "night") {
     screen.value = "graveyard";
     return;
   }
 
-  // GRAVEYARD -> NEXT DAY
+  // GRAVEYARD -> NEXT DAY (or END)
   if (screen.value === "graveyard") {
+    if (checkVictory()) return;
+
     currentDay.value++;
-    generateDayEvents();
-
-    if (checkVictory()) {
-      return;
-    }
-
     screen.value = "day";
+    generateEvents("day");
     return;
   }
 }

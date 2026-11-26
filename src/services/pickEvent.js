@@ -5,9 +5,15 @@ export function pickEvent(
   currentDay,
   pastEvents = [],
   requiredParticipantId,
+  time = "day",
 ) {
   const validEvents = events
     .filter((event) => {
+      // Events without a time property are daytime events.
+      const eventTime = event.time || "day";
+
+      if (eventTime !== time) return false;
+
       if (event.days && !event.days.includes(currentDay)) {
         return false;
       }

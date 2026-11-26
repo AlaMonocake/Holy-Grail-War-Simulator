@@ -182,7 +182,7 @@ const events = [
         }));
     },
     effects(master, servant) {
-      // We'll add healing effects here later.
+      // might add healing effects here later
     },
   },
 
@@ -234,7 +234,7 @@ const events = [
 
   {
     id: "event_church_ambush",
-    text: "{master1} runs for the church, but {master2} and {servant} ambush and kill {himHer}.",
+    text: "{master1} runs for the church, but {master2} and {servant} ambush and kill {master1}.",
     days: [3, 4, 5, 6, 7],
     weight: 3,
     requires: [],
@@ -266,7 +266,7 @@ const events = [
 
   {
     id: "event_sanity",
-    text: "{master} questions {hisHer} sanity.",
+    text: "{master} questions their sanity.",
     days: [2, 3, 4, 5, 6, 7],
     weight: 2,
     requires: [],
@@ -374,7 +374,7 @@ const events = [
 
   {
     id: "event_observe_familiar",
-    text: "{master} observes the city through {hisHer} familiar.",
+    text: "{master} observes the city through a familiar.",
     days: [1, 2, 3, 4, 5, 6, 7],
     weight: 3,
     requires: [],
@@ -394,7 +394,7 @@ const events = [
 
   {
     id: "event_betrayal_nonlethal",
-    text: "{servant} decides to betray {master}, but leaves {himHer} alive.",
+    text: "{servant} decides to betray {master}, but spares their life.",
     days: [3, 4, 5, 6, 7],
     weight: 2,
     requires: [],
@@ -416,7 +416,7 @@ const events = [
 
   {
     id: "event_betrayal_murder",
-    text: "{servant} decides to betray {master} and kills {himHer}.",
+    text: "{servant} decides to betray {master}, killing them.",
     days: [3, 4, 5, 6, 7],
     weight: 2,
     requires: [],
@@ -587,7 +587,7 @@ const events = [
 
   {
     id: "event_poison_drink",
-    text: "{servant} poisons {master}'s drink, killing {himHer}.",
+    text: "{servant} poisons {master}'s drink, killing {master}.",
     days: [2, 3, 4, 5, 6, 7],
     weight: 2,
     requires: [],
@@ -647,7 +647,7 @@ const events = [
 
   {
     id: "event_body_control",
-    text: "{servant} takes control of {master}'s body and forces {himHer} to kill {himHer}self.",
+    text: "{servant} takes control of {master}'s body and forces them to commit suicide.",
     days: [3, 4, 5, 6, 7],
     weight: 1,
     requires: [],
@@ -929,6 +929,103 @@ const events = [
 
     effects(master1, master2, master3, servant3) {
       servant3.status = "dead";
+    },
+  },
+  // NIGHT EVENTS
+
+  {
+    id: "night_share_mana",
+    time: "night",
+    text: "{master} shares mana with {servant}.",
+    weight: 2,
+    valid(participants) {
+      return masterWithServant(participants);
+    },
+    effects(master, servant) {},
+  },
+
+  {
+    id: "night_talk",
+    time: "night",
+    text: "{master} and {servant} spend the night talking about their lives.",
+    weight: 2,
+    valid(participants) {
+      return masterWithServant(participants);
+    },
+    effects(master, servant) {},
+  },
+
+  {
+    id: "night_servant_memories",
+    time: "night",
+    text: "{master} goes to sleep and sees {servant}'s memories.",
+    weight: 2,
+    valid(participants) {
+      return masterWithServant(participants);
+    },
+    effects(master, servant) {},
+  },
+
+  {
+    id: "night_cry_alone",
+    time: "night",
+    text: "{master} cries to sleep.",
+    weight: 2,
+    valid(participants) {
+      return aliveMasters(participants).map((master) => ({ master }));
+    },
+    effects(master) {},
+  },
+
+  {
+    id: "night_servant_comforts_master",
+    time: "night",
+    text: "{master} cries to sleep, and {servant} tries to comfort him.",
+    weight: 2,
+    valid(participants) {
+      return masterWithServant(participants);
+    },
+    effects(master, servant) {},
+  },
+
+  {
+    id: "night_shelter_accepted",
+    time: "night",
+    text: "{master1} begs {master2} to take him in for safety. {master2} agrees.",
+    weight: 2,
+    valid(participants) {
+      return masterPairs(participants);
+    },
+    effects(master1, master2) {},
+  },
+
+  {
+    id: "night_shelter_betrayal",
+    time: "night",
+    text: "{master1} begs {master2} to take him in for safety, but {master2} uses this opportunity to kill him.",
+    weight: 2,
+    valid(participants) {
+      return masterPairs(participants);
+    },
+    effects(master1, master2) {
+      master1.status = "dead";
+    },
+  },
+  {
+    id: "nightmares",
+    time: "night",
+    text: "{master} is awoken by nightmares.",
+    days: [1, 2, 3, 4, 5, 6, 7],
+    weight: 2,
+
+    valid(participants) {
+      return aliveMasters(participants).map((master) => ({
+        master,
+      }));
+    },
+
+    effects(master) {
+      // Nothing happens.
     },
   },
 ];
